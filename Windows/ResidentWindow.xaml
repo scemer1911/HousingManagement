@@ -1,0 +1,37 @@
+﻿<Window x:Class="HousingManagement.Windows.ResidentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Жильцы" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Поисковая панель -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBox x:Name="SearchBox" Width="200" Margin="0,0,10,0" />
+            <Button Content="Найти" Width="100" Click="Search_Click"/>
+            <Button Content="Сброс" Width="100" Margin="10,0,0,0" Click="ResetSearch_Click"/>
+        </StackPanel>
+
+        <!-- Таблица жильцов -->
+        <DataGrid x:Name="ClientDataGrid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="*"/>
+                <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="2*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Кнопки действий -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <Button Content="Добавить" Width="100" Margin="5" Click="Add_Click"/>
+            <Button Content="Редактировать" Width="100" Margin="5" Click="Edit_Click"/>
+            <Button Content="Удалить" Width="100" Margin="5" Click="Delete_Click"/>
+            <Button Content="Назад" Width="100" Margin="5" Click="Back_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
