@@ -17,7 +17,9 @@ namespace HousingManagement
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Services()
         {
+            this.Invoices = new HashSet<Invoices>();
             this.Payments = new HashSet<Payments>();
+            this.ResidentServices = new HashSet<ResidentServices>();
         }
     
         public int Id { get; set; }
@@ -25,6 +27,10 @@ namespace HousingManagement
         public Nullable<decimal> Rate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Invoices> Invoices { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Payments> Payments { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ResidentServices> ResidentServices { get; set; }
     }
 }

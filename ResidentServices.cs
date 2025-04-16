@@ -12,15 +12,15 @@ namespace HousingManagement
     using System;
     using System.Collections.Generic;
     
-    public partial class Users
+    public partial class ResidentServices
     {
         public int Id { get; set; }
-        public string Login { get; set; }
-        public string PasswordHash { get; set; }
-        public Nullable<int> RoleId { get; set; }
         public Nullable<int> ResidentId { get; set; }
+        public Nullable<int> ServiceId { get; set; }
+        public Nullable<bool> IsFixed { get; set; }
+        public Nullable<decimal> CustomRate { get; set; }
     
         public virtual Residents Residents { get; set; }
-        public virtual Roles Roles { get; set; }
+        public virtual Services Services { get; set; }
     }
 }

@@ -4,7 +4,18 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Хранилище HousingDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище HousingDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Invoices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ResidentId" Type="int" />
+          <Property Name="ServiceId" Type="int" />
+          <Property Name="Amount" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="InvoiceDate" Type="date" />
+          <Property Name="IsPaid" Type="bit" />
+        </EntityType>
         <EntityType Name="Payments">
           <Key>
             <PropertyRef Name="Id" />
@@ -24,6 +35,23 @@
           <Property Name="Address" Type="nvarchar" MaxLength="200" />
           <Property Name="AccountNumber" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="ResidentServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ResidentId" Type="int" />
+          <Property Name="ServiceId" Type="int" />
+          <Property Name="IsFixed" Type="bit" />
+          <Property Name="CustomRate" Type="decimal" Precision="10" Scale="2" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Services">
           <Key>
             <PropertyRef Name="Id" />
@@ -39,8 +67,33 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Login" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="PasswordHash" Type="nvarchar" MaxLength="256" Nullable="false" />
-          <Property Name="Role" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="RoleId" Type="int" />
+          <Property Name="ResidentId" Type="int" />
         </EntityType>
+        <Association Name="FK__Invoices__Reside__5629CD9C">
+          <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
+          <End Role="Invoices" Type="Self.Invoices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Residents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Invoices">
+              <PropertyRef Name="ResidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Invoices__Servic__571DF1D5">
+          <End Role="Services" Type="Self.Services" Multiplicity="0..1" />
+          <End Role="Invoices" Type="Self.Invoices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Invoices">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Payments__Reside__3D5E1FD2">
           <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
           <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
@@ -65,11 +118,101 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__ResidentS__Resid__5165187F">
+          <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
+          <End Role="ResidentServices" Type="Self.ResidentServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Residents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ResidentServices">
+              <PropertyRef Name="ResidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ResidentS__Servi__52593CB8">
+          <End Role="Services" Type="Self.Services" Multiplicity="0..1" />
+          <End Role="ResidentServices" Type="Self.ResidentServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ResidentServices">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__ResidentI__4E88ABD4">
+          <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Residents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="ResidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__RoleId__4D94879B">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="Хранилище HousingDBModelContainer">
+          <EntitySet Name="Invoices" EntityType="Self.Invoices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Payments" EntityType="Self.Payments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Residents" EntityType="Self.Residents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ResidentServices" EntityType="Self.ResidentServices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Services" EntityType="Self.Services" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Invoices__Reside__5629CD9C" Association="Self.FK__Invoices__Reside__5629CD9C">
+            <End Role="Residents" EntitySet="Residents" />
+            <End Role="Invoices" EntitySet="Invoices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Invoices__Servic__571DF1D5" Association="Self.FK__Invoices__Servic__571DF1D5">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="Invoices" EntitySet="Invoices" />
+          </AssociationSet>
           <AssociationSet Name="FK__Payments__Reside__3D5E1FD2" Association="Self.FK__Payments__Reside__3D5E1FD2">
             <End Role="Residents" EntitySet="Residents" />
             <End Role="Payments" EntitySet="Payments" />
@@ -78,11 +221,41 @@
             <End Role="Services" EntitySet="Services" />
             <End Role="Payments" EntitySet="Payments" />
           </AssociationSet>
+          <AssociationSet Name="FK__ResidentS__Resid__5165187F" Association="Self.FK__ResidentS__Resid__5165187F">
+            <End Role="Residents" EntitySet="Residents" />
+            <End Role="ResidentServices" EntitySet="ResidentServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ResidentS__Servi__52593CB8" Association="Self.FK__ResidentS__Servi__52593CB8">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="ResidentServices" EntitySet="ResidentServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__ResidentI__4E88ABD4" Association="Self.FK__Users__ResidentI__4E88ABD4">
+            <End Role="Residents" EntitySet="Residents" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__RoleId__4D94879B" Association="Self.FK__Users__RoleId__4D94879B">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HousingDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Invoices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ResidentId" Type="Int32" />
+          <Property Name="ServiceId" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="InvoiceDate" Type="DateTime" Precision="0" />
+          <Property Name="IsPaid" Type="Boolean" />
+          <NavigationProperty Name="Residents" Relationship="Self.FK__Invoices__Reside__5629CD9C" FromRole="Invoices" ToRole="Residents" />
+          <NavigationProperty Name="Services" Relationship="Self.FK__Invoices__Servic__571DF1D5" FromRole="Invoices" ToRole="Services" />
+        </EntityType>
         <EntityType Name="Payments">
           <Key>
             <PropertyRef Name="Id" />
@@ -103,7 +276,30 @@
           <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="AccountNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Invoices" Relationship="Self.FK__Invoices__Reside__5629CD9C" FromRole="Residents" ToRole="Invoices" />
           <NavigationProperty Name="Payments" Relationship="Self.FK__Payments__Reside__3D5E1FD2" FromRole="Residents" ToRole="Payments" />
+          <NavigationProperty Name="ResidentServices" Relationship="Self.FK__ResidentS__Resid__5165187F" FromRole="Residents" ToRole="ResidentServices" />
+          <NavigationProperty Name="Users" Relationship="Self.FK__Users__ResidentI__4E88ABD4" FromRole="Residents" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="ResidentServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ResidentId" Type="Int32" />
+          <Property Name="ServiceId" Type="Int32" />
+          <Property Name="IsFixed" Type="Boolean" />
+          <Property Name="CustomRate" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="Residents" Relationship="Self.FK__ResidentS__Resid__5165187F" FromRole="ResidentServices" ToRole="Residents" />
+          <NavigationProperty Name="Services" Relationship="Self.FK__ResidentS__Servi__52593CB8" FromRole="ResidentServices" ToRole="Services" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Users" Relationship="Self.FK__Users__RoleId__4D94879B" FromRole="Roles" ToRole="Users" />
         </EntityType>
         <EntityType Name="Services">
           <Key>
@@ -112,7 +308,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Rate" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="Invoices" Relationship="Self.FK__Invoices__Servic__571DF1D5" FromRole="Services" ToRole="Invoices" />
           <NavigationProperty Name="Payments" Relationship="Self.FK__Payments__Servic__3E52440B" FromRole="Services" ToRole="Payments" />
+          <NavigationProperty Name="ResidentServices" Relationship="Self.FK__ResidentS__Servi__52593CB8" FromRole="Services" ToRole="ResidentServices" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -121,8 +319,35 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Login" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PasswordHash" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Role" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" />
+          <Property Name="ResidentId" Type="Int32" />
+          <NavigationProperty Name="Residents" Relationship="Self.FK__Users__ResidentI__4E88ABD4" FromRole="Users" ToRole="Residents" />
+          <NavigationProperty Name="Roles" Relationship="Self.FK__Users__RoleId__4D94879B" FromRole="Users" ToRole="Roles" />
         </EntityType>
+        <Association Name="FK__Invoices__Reside__5629CD9C">
+          <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
+          <End Role="Invoices" Type="Self.Invoices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Residents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Invoices">
+              <PropertyRef Name="ResidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Invoices__Servic__571DF1D5">
+          <End Role="Services" Type="Self.Services" Multiplicity="0..1" />
+          <End Role="Invoices" Type="Self.Invoices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Invoices">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Payments__Reside__3D5E1FD2">
           <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
           <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
@@ -147,11 +372,70 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__ResidentS__Resid__5165187F">
+          <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
+          <End Role="ResidentServices" Type="Self.ResidentServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Residents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ResidentServices">
+              <PropertyRef Name="ResidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__ResidentI__4E88ABD4">
+          <End Role="Residents" Type="Self.Residents" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Residents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="ResidentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ResidentS__Servi__52593CB8">
+          <End Role="Services" Type="Self.Services" Multiplicity="0..1" />
+          <End Role="ResidentServices" Type="Self.ResidentServices" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Services">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ResidentServices">
+              <PropertyRef Name="ServiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__RoleId__4D94879B">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="HousingDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Invoices" EntityType="Self.Invoices" />
           <EntitySet Name="Payments" EntityType="Self.Payments" />
           <EntitySet Name="Residents" EntityType="Self.Residents" />
+          <EntitySet Name="ResidentServices" EntityType="Self.ResidentServices" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" />
           <EntitySet Name="Services" EntityType="Self.Services" />
           <EntitySet Name="Users" EntityType="Self.Users" />
+          <AssociationSet Name="FK__Invoices__Reside__5629CD9C" Association="Self.FK__Invoices__Reside__5629CD9C">
+            <End Role="Residents" EntitySet="Residents" />
+            <End Role="Invoices" EntitySet="Invoices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Invoices__Servic__571DF1D5" Association="Self.FK__Invoices__Servic__571DF1D5">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="Invoices" EntitySet="Invoices" />
+          </AssociationSet>
           <AssociationSet Name="FK__Payments__Reside__3D5E1FD2" Association="Self.FK__Payments__Reside__3D5E1FD2">
             <End Role="Residents" EntitySet="Residents" />
             <End Role="Payments" EntitySet="Payments" />
@@ -160,13 +444,82 @@
             <End Role="Services" EntitySet="Services" />
             <End Role="Payments" EntitySet="Payments" />
           </AssociationSet>
+          <AssociationSet Name="FK__ResidentS__Resid__5165187F" Association="Self.FK__ResidentS__Resid__5165187F">
+            <End Role="Residents" EntitySet="Residents" />
+            <End Role="ResidentServices" EntitySet="ResidentServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__ResidentI__4E88ABD4" Association="Self.FK__Users__ResidentI__4E88ABD4">
+            <End Role="Residents" EntitySet="Residents" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ResidentS__Servi__52593CB8" Association="Self.FK__ResidentS__Servi__52593CB8">
+            <End Role="Services" EntitySet="Services" />
+            <End Role="ResidentServices" EntitySet="ResidentServices" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__RoleId__4D94879B" Association="Self.FK__Users__RoleId__4D94879B">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(HousingDBModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(HousingDBModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
         </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="Хранилище HousingDBModelContainer" CdmEntityContainer="HousingDBEntities">
+          <EntitySetMapping Name="Invoices">
+            <EntityTypeMapping TypeName="HousingDBModel.Invoices">
+              <MappingFragment StoreEntitySet="Invoices">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ResidentId" ColumnName="ResidentId" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Payments">
             <EntityTypeMapping TypeName="HousingDBModel.Payments">
               <MappingFragment StoreEntitySet="Payments">
@@ -188,6 +541,25 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ResidentServices">
+            <EntityTypeMapping TypeName="HousingDBModel.ResidentServices">
+              <MappingFragment StoreEntitySet="ResidentServices">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ResidentId" ColumnName="ResidentId" />
+                <ScalarProperty Name="ServiceId" ColumnName="ServiceId" />
+                <ScalarProperty Name="IsFixed" ColumnName="IsFixed" />
+                <ScalarProperty Name="CustomRate" ColumnName="CustomRate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="HousingDBModel.Roles">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Services">
             <EntityTypeMapping TypeName="HousingDBModel.Services">
               <MappingFragment StoreEntitySet="Services">
@@ -203,10 +575,35 @@
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Login" ColumnName="Login" />
                 <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="ResidentId" ColumnName="ResidentId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Хранилище HousingDBModel.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Хранилище HousingDBModel.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Хранилище HousingDBModel.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Хранилище HousingDBModel.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HousingDBModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Хранилище HousingDBModel.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HousingDBModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Хранилище HousingDBModel.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Хранилище HousingDBModel.sp_upgraddiagrams" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

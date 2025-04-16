@@ -65,9 +65,22 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="HousingModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HousingModel.Context.tt</DependentUpon>
+    </Compile>
     <Compile Include="HousingModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>HousingModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HousingModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HousingModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Invoices.cs">
       <DependentUpon>HousingModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Pages\PaymentsPage.xaml.cs">
@@ -79,31 +92,33 @@
     <Compile Include="Pages\ServicesPage.xaml.cs">
       <DependentUpon>ServicesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Payments.cs">
       <DependentUpon>HousingModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Residents.cs">
       <DependentUpon>HousingModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="ResidentServices.cs">
+      <DependentUpon>HousingModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Roles.cs">
+      <DependentUpon>HousingModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Services.cs">
+      <DependentUpon>HousingModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>HousingModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sp_helpdiagrams_Result.cs">
       <DependentUpon>HousingModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Users.cs">
       <DependentUpon>HousingModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="HousingModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HousingModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="HousingModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>HousingModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Windows\AddEditResidentWindow.xaml.cs">
       <DependentUpon>AddEditResidentWindow.xaml</DependentUpon>
@@ -159,18 +174,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HousingModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>HousingModel.Context.cs</LastGenOutput>
-      <DependentUpon>HousingModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="HousingModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>HousingModel.edmx</DependentUpon>
-      <LastGenOutput>HousingModel.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +214,17 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="HousingModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HousingModel.edmx</DependentUpon>
+      <LastGenOutput>HousingModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="HousingModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HousingModel.edmx</DependentUpon>
+      <LastGenOutput>HousingModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

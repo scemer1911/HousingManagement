@@ -12,28 +12,17 @@ namespace HousingManagement
     using System;
     using System.Collections.Generic;
     
-    public partial class Residents
+    public partial class Roles
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Residents()
+        public Roles()
         {
-            this.Invoices = new HashSet<Invoices>();
-            this.Payments = new HashSet<Payments>();
-            this.ResidentServices = new HashSet<ResidentServices>();
             this.Users = new HashSet<Users>();
         }
     
         public int Id { get; set; }
-        public string FullName { get; set; }
-        public string Address { get; set; }
-        public string AccountNumber { get; set; }
+        public string Name { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Invoices> Invoices { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Payments> Payments { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ResidentServices> ResidentServices { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Users> Users { get; set; }
     }
