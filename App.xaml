@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:HousingManagement"
              StartupUri="Windows/LoginWindow.xaml">
     <Application.Resources>
-         
+        <local:BoolToStatusConverter x:Key="BoolToStatusConverter"/>
+        <local:InverseBoolConverter x:Key="InverseBoolConverter"/>
     </Application.Resources>
 </Application>

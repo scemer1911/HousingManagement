@@ -21,9 +21,7 @@ namespace HousingManagement.Windows
 
             using (var db = new HousingDBEntities())
             {
-                // Используем Include для загрузки связанных данных о ролях
                 var user = db.Users.Include(u => u.Roles).FirstOrDefault(u => u.Login == login);
-
                 if (user == null)
                 {
                     MessageBox.Show("Пользователь с таким логином не найден.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -37,7 +35,6 @@ namespace HousingManagement.Windows
                 }
 
                 string roleName = user.Roles?.Name;
-
                 if (roleName == null)
                 {
                     MessageBox.Show("Роль пользователя не определена.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -47,11 +44,10 @@ namespace HousingManagement.Windows
                 MessageBox.Show($"Успешный вход как {roleName}");
 
                 Window nextWindow;
-
                 if (roleName.ToLower() == "администратор")
                     nextWindow = new AdminWindow();
                 else if (roleName.ToLower() == "жилец")
-                    nextWindow = new UserWindow();
+                    nextWindow = new UserWindow(user.ResidentId ?? 0); // Передаем идентификатор жильца
                 else
                 {
                     MessageBox.Show("Неизвестная роль пользователя.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -64,3 +60,4 @@ namespace HousingManagement.Windows
         }
     }
 }
+

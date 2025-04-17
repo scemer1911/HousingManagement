@@ -19,7 +19,10 @@ namespace HousingManagement
         public Nullable<int> ServiceId { get; set; }
         public Nullable<bool> IsFixed { get; set; }
         public Nullable<decimal> CustomRate { get; set; }
+        public Nullable<int> Quantity { get; set; }
+        public Nullable<int> InvoiceId { get; set; }
     
+        public virtual Invoices Invoices { get; set; }
         public virtual Residents Residents { get; set; }
         public virtual Services Services { get; set; }
     }

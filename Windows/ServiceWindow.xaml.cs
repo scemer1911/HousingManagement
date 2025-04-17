@@ -1,109 +1,108 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
-using HousingManagement;
-using System.Collections.Generic;
-using System;
+using System.Collections.ObjectModel;
 
 namespace HousingManagement.Windows
 {
     public partial class ServiceWindow : Window
     {
         private readonly HousingDBEntities _db;
-        private readonly List<ResidentService> _selectedServices;
+        private readonly ObservableCollection<SelectedService> _selectedServices;
 
         public ServiceWindow()
         {
             InitializeComponent();
             _db = new HousingDBEntities();
-            _selectedServices = new List<ResidentService>();
+            _selectedServices = new ObservableCollection<SelectedService>();
 
-            // Загрузка всех жильцов из базы данных и привязка их к ComboBox
             ResidentsComboBox.ItemsSource = _db.Residents.ToList();
-
-            // Загрузка доступных услуг из базы данных и привязка к ComboBox
             ServicesComboBox.ItemsSource = _db.Services.ToList();
+            InvoiceListView.ItemsSource = _selectedServices;
         }
 
-        // Обработчик клика по кнопке "Добавить услугу"
+        // Вспомогательный класс для отображения выбранных услуг
+        private class SelectedService
+        {
+            public int ServiceId { get; set; }
+            public string ServiceName { get; set; }
+            public decimal Rate { get; set; }
+            public int Quantity { get; set; }
+            public decimal Total => Rate * Quantity;
+        }
+
         private void AddServiceButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ServicesComboBox.SelectedItem != null && int.TryParse(QuantityTextBox.Text, out int quantity) && quantity > 0)
+            if (!(ResidentsComboBox.SelectedItem is Residents resident))
             {
-                var service = (Services)ServicesComboBox.SelectedItem;
-
-                // Добавляем выбранную услугу в список
-                _selectedServices.Add(new ResidentService
-                {
-                    ServiceId = service.Id,
-                    Quantity = quantity,
-                    Service = service
-                });
-
-                // Обновляем ListView с выбранными услугами
-                InvoiceListView.ItemsSource = null;
-                InvoiceListView.ItemsSource = _selectedServices;
+                MessageBox.Show("Выберите, пожалуйста, жильца.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
-            else
+            if (!(ServicesComboBox.SelectedItem is Services svc) ||
+                !int.TryParse(QuantityTextBox.Text, out int qty) || qty <= 0)
             {
-                MessageBox.Show("Пожалуйста, выберите услугу и укажите количество.");
+                MessageBox.Show("Выберите услугу и укажите корректное количество.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
+
+            _selectedServices.Add(new SelectedService
+            {
+                ServiceId = svc.Id,
+                ServiceName = svc.Name,
+                Rate = svc.Rate ?? 0,
+                Quantity = qty
+            });
         }
 
-        // Обработчик клика по кнопке "Создать счет"
         private void CreateInvoiceButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedServices.Count == 0)
             {
-                MessageBox.Show("Не выбраны услуги для составления счета.");
+                MessageBox.Show("Не добавлены услуги для счета.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
-            // Проверяем, выбран ли жилец
-            var selectedResident = ResidentsComboBox.SelectedItem as Residents;
-            if (selectedResident == null)
+            if (!(ResidentsComboBox.SelectedItem is Residents resident))
             {
-                MessageBox.Show("Пожалуйста, выберите жильца.");
+                MessageBox.Show("Выберите жильца.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Создание нового счета
+            // Вычисляем общую сумму
+            decimal totalAmount = _selectedServices.Sum(x => x.Total);
+
+            // Создаем счет
             var invoice = new Invoices
             {
-                ResidentId = selectedResident.Id,
-                InvoiceDate = DateTime.Now
-                // TotalAmount удалён, так как его нет в БД
+                ResidentId = resident.Id,
+                InvoiceDate = DateTime.Now,
+                Amount = totalAmount,
+                IsPaid = false
             };
-
             _db.Invoices.Add(invoice);
-            _db.SaveChanges();
+            _db.SaveChanges(); // чтобы получить invoice.Id
 
-            // Привязываем услуги к новому счету
-            foreach (var selectedService in _selectedServices)
+            // Привязываем услуги
+            foreach (var sel in _selectedServices)
             {
                 _db.ResidentServices.Add(new ResidentServices
                 {
-                    ResidentId = selectedResident.Id,
-                    ServiceId = selectedService.ServiceId,
+                    ResidentId = resident.Id,
+                    ServiceId = sel.ServiceId,
+                    Quantity = sel.Quantity,
+                    CustomRate = sel.Rate,
                     IsFixed = false,
-                    CustomRate = selectedService.Service.Rate
+                    InvoiceId = invoice.Id
                 });
             }
-
             _db.SaveChanges();
 
-            MessageBox.Show("Счет успешно создан!");
+            MessageBox.Show($"Счет №{invoice.Id} создан. Сумма: {totalAmount:N2}", "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
             this.Close();
         }
+
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-    }
-
-    public class ResidentService
-    {
-        public int ServiceId { get; set; }
-        public int Quantity { get; set; }
-        public Services Service { get; set; }
     }
 }

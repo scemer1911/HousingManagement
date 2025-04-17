@@ -5,22 +5,30 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="0b7a9ed3fb5f49ce8e986a47ed65d7db" Name="Diagram1" ZoomLevel="97">
-        <EntityTypeShape EntityType="HousingDBModel.Invoices" Width="1.5" PointX="4.375" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="HousingDBModel.Payments" Width="1.5" PointX="9" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="HousingDBModel.Residents" Width="1.5" PointX="6.5" PointY="3.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="HousingDBModel.ResidentServices" Width="1.5" PointX="9" PointY="4.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="HousingDBModel.Roles" Width="1.5" PointX="9" PointY="7.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="HousingDBModel.Services" Width="1.5" PointX="4.375" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="HousingDBModel.Users" Width="1.5" PointX="6.5" PointY="6.375" IsExpanded="true" />
-        <AssociationConnector Association="HousingDBModel.FK__Invoices__Reside__5629CD9C" ManuallyRouted="false" ></AssociationConnector>
-        <AssociationConnector Association="HousingDBModel.FK__Invoices__Servic__571DF1D5" ManuallyRouted="false" />
-        <AssociationConnector Association="HousingDBModel.FK__Payments__Reside__3D5E1FD2" ManuallyRouted="false" />
-        <AssociationConnector Association="HousingDBModel.FK__Payments__Servic__3E52440B" ManuallyRouted="false" />
-        <AssociationConnector Association="HousingDBModel.FK__ResidentS__Resid__5165187F" ManuallyRouted="false" />
-        <AssociationConnector Association="HousingDBModel.FK__Users__ResidentI__4E88ABD4" ManuallyRouted="false" />
-        <AssociationConnector Association="HousingDBModel.FK__ResidentS__Servi__52593CB8" ManuallyRouted="false" >
+        <EntityTypeShape EntityType="HousingDBModel.Invoices" Width="1.5" PointX="3" PointY="4.5" />
+        <EntityTypeShape EntityType="HousingDBModel.Payments" Width="1.5" PointX="6" PointY="4.75" />
+        <EntityTypeShape EntityType="HousingDBModel.Residents" Width="1.5" PointX="0.75" PointY="4.625" />
+        <EntityTypeShape EntityType="HousingDBModel.ResidentServices" Width="1.5" PointX="8.25" PointY="4.5" />
+        <EntityTypeShape EntityType="HousingDBModel.Roles" Width="1.5" PointX="6.125" PointY="2.25" />
+        <EntityTypeShape EntityType="HousingDBModel.Services" Width="1.5" PointX="5" PointY="7.875" />
+        <EntityTypeShape EntityType="HousingDBModel.Users" Width="1.5" PointX="3" PointY="0.75" />
+        <AssociationConnector Association="HousingDBModel.FK__Invoices__Reside__5629CD9C" />
+        <AssociationConnector Association="HousingDBModel.FK__Invoices__Servic__571DF1D5" />
+        <AssociationConnector Association="HousingDBModel.FK_ResidentServices_InvoiceId" />
+        <AssociationConnector Association="HousingDBModel.FK__Payments__Reside__3D5E1FD2" ManuallyRouted="true" >
+          <ConnectorPoint PointX="1.5" PointY="7.1821907552083326" />
+          <ConnectorPoint PointX="1.5" PointY="7.4994921875" />
+          <ConnectorPoint PointX="3.6666666666666665" PointY="7.4994921874999987" />
+          <ConnectorPoint PointX="3.8333333333333335" PointY="7.4994921875" />
+          <ConnectorPoint PointX="5.625" PointY="7.4994921875" />
+          <ConnectorPoint PointX="5.625" PointY="5.9324446614583328" />
+          <ConnectorPoint PointX="6" PointY="5.9324446614583328" />
         </AssociationConnector>
-        <AssociationConnector Association="HousingDBModel.FK__Users__RoleId__4D94879B" ManuallyRouted="false" />
+        <AssociationConnector Association="HousingDBModel.FK__Payments__Servic__3E52440B" />
+        <AssociationConnector Association="HousingDBModel.FK__ResidentS__Resid__5165187F" />
+        <AssociationConnector Association="HousingDBModel.FK__Users__ResidentI__4E88ABD4" />
+        <AssociationConnector Association="HousingDBModel.FK__ResidentS__Servi__52593CB8" />
+        <AssociationConnector Association="HousingDBModel.FK__Users__RoleId__4D94879B" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

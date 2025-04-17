@@ -14,6 +14,12 @@ namespace HousingManagement
     
     public partial class Invoices
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Invoices()
+        {
+            this.ResidentServices = new HashSet<ResidentServices>();
+        }
+    
         public int Id { get; set; }
         public Nullable<int> ResidentId { get; set; }
         public Nullable<int> ServiceId { get; set; }
@@ -23,5 +29,7 @@ namespace HousingManagement
     
         public virtual Residents Residents { get; set; }
         public virtual Services Services { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ResidentServices> ResidentServices { get; set; }
     }
 }

@@ -64,6 +64,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\BoolToStatusConverter.cs" />
+    <Compile Include="Helpers\InverseBoolConverter.cs" />
     <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="HousingModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -82,15 +84,6 @@
     </Compile>
     <Compile Include="Invoices.cs">
       <DependentUpon>HousingModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\PaymentsPage.xaml.cs">
-      <DependentUpon>PaymentsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ResidentsPage.xaml.cs">
-      <DependentUpon>ResidentsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ServicesPage.xaml.cs">
-      <DependentUpon>ServicesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -125,6 +118,9 @@
     </Compile>
     <Compile Include="Windows\AdminWindow.xaml.cs">
       <DependentUpon>AdminWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\CreateServiceWindow.xaml.cs">
+      <DependentUpon>CreateServiceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ResidentWindow.xaml.cs">
       <DependentUpon>ResidentWindow.xaml</DependentUpon>
@@ -177,23 +173,15 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Pages\PaymentsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ResidentsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ServicesPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\AddEditResidentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AdminWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\CreateServiceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

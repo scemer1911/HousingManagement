@@ -1,0 +1,16 @@
+﻿<Window x:Class="HousingManagement.Windows.CreateServiceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Создать услугу" Height="200" Width="300" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <StackPanel>
+            <TextBlock Text="Название услуги:" />
+            <TextBox x:Name="ServiceNameTextBox" Margin="0,5"/>
+
+            <TextBlock Text="Тариф (цена):" />
+            <TextBox x:Name="RateTextBox" Margin="0,5"/>
+
+            <Button Content="Сохранить" Click="SaveButton_Click" Margin="0,10,0,0" HorizontalAlignment="Right" Width="80"/>
+        </StackPanel>
+    </Grid>
+</Window>
